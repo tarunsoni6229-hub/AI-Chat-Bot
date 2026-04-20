@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. Core Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-grid"></div>
+    <div class="particle-container" id="particles"></div>
+
+    <div class="jarvis-container">
+
+        <!-- Welcome / Boot Sequence -->
+        <main id="view-boot" class="view active">
+            <div class="boot-sequence">
+                <div class="arc-reactor">
+                    <div class="core"></div>
+                    <div class="ring outer-ring"></div>
+                    <div class="ring middle-ring"></div>
+                    <div class="ring inner-ring"></div>
+                    <div class="marks"></div>
+                </div>
+                <h1 class="logo-text">J.A.R.V.I.S.</h1>
+                <p class="system-status">SYSTEM INITIALIZING...</p>
+                <div class="progress-bar">
+                    <div class="progress" id="boot-progress"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Authentication View (Login/Register) -->
+        <main id="view-auth" class="view">
+            <div class="glass-panel auth-panel">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchAuthTab('login')">INITIALIZE</button>
+                    <button class="tab-btn" onclick="switchAuthTab('register')">NEW PROTOCOL</button>
+                    <button class="tab-btn" onclick="switchAuthTab('scan')">FACE SCAN</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+                    <h2>SYSTEM AUTHORIZATION</h2>
+                    <div class="input-group">
+                        <i class="fas fa-fingerprint"></i>
+                        <input type="text" placeholder="Access ID / Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Passcode" required>
+                    </div>
+                    <button type="submit" class="cyber-btn">
+                        <span>AUTHENTICATE</span>
+                        <div class="scanner"></div>
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+                    <h2>REGISTER ENTITY</h2>
+                    <div class="input-group">
+                        <i class="fas fa-user-plus"></i>
+                        <input type="text" placeholder="Entity Designation (Username)" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Comms Channel (Email)" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="password" placeholder="New Passcode" required>
+                    </div>
+                    <button type="submit" class="cyber-btn outline">
+                        <span>ESTABLISH PROTOCOL</span>
+                    </button>
+                </form>
+
+                <!-- Face Scan Form -->
+                <div id="scan-form" class="auth-form face-scan-container">
+                    <h2>BIOMETRIC RECOGNITION</h2>
+                    <div class="video-wrapper">
+                        <video id="webcam" autoplay playsinline></video>
+                        <div class="scan-grid"></div>
+                        <div class="scan-line"></div>
+                    </div>
+                    <button type="button" class="cyber-btn" onclick="startFaceScan()">
+                        <span id="scan-btn-text">INITIATE SCAN</span>
+                        <div class="scanner"></div>
+                    </button>
+                    <p id="scan-status" class="scan-status">AWAITING CAMERA...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Main Dashboard View -->
+        <main id="view-dashboard" class="view">
+            <header class="hud-header">
+                <div class="sys-info">
+                    <span class="status-indicator"></span> ONLINE | SECURE CONNECTION
+                </div>
+                <h1 class="logo-text small">J.A.R.V.I.S.</h1>
+                <div class="user-control">
+                    <button class="icon-btn" onclick="switchView('view-profile')"><i
+                            class="fas fa-user-cog"></i></button>
+                    <button class="icon-btn" onclick="logout()"><i class="fas fa-power-off"></i></button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+
+                <!-- AI Interface Module -->
+                <div class="glass-panel ai-module">
+                    <div class="panel-header">
+                        <i class="fas fa-brain"></i> PRIMARY INTELLIGENCE CORE
+                    </div>
+
+                    <div class="chat-container" id="chat-box">
+                        <div class="message ai-message">
+                            <div class="avatar"><i class="fas fa-code-branch"></i></div>
+                            <div class="content">Greetings. I am J.A.R.V.I.S. How may I assist you with your operations
+                                today?</div>
+                        </div>
+                    </div>
+
+                    <form id="ai-form" class="ai-input-form" onsubmit="handleAIQuery(event)">
+                        <div class="voice-wave" id="voice-wave">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                        <input type="text" id="ai-input" placeholder="Enter command or query..." autocomplete="off">
+                        <button type="button" class="voice-btn" onmousedown="startListening()"
+                            onmouseup="stopListening()"><i class="fas fa-microphone"></i></button>
+                        <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+
+                <!-- System Stats Module -->
+                <div class="glass-panel stats-module">
+                    <div class="panel-header">
+                        <i class="fas fa-chart-network"></i> SYSTEM DIAGNOSTICS
+                    </div>
+                    <div class="stat-rings">
+                        <div class="stat-ring">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" class="bg"></circle>
+                                <circle cx="50" cy="50" r="45" class="fg" style="stroke-dashoffset: 60;"></circle>
+                            </svg>
+                            <div class="val">CORE</div>
+                        </div>
+                        <div class="stat-ring">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" class="bg"></circle>
+                                <circle cx="50" cy="50" r="45" class="fg" style="stroke-dashoffset: 120;"></circle>
+                            </svg>
+                            <div class="val">MEM</div>
+                        </div>
+                        <div class="stat-ring">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" class="bg"></circle>
+                                <circle cx="50" cy="50" r="45" class="fg" style="stroke-dashoffset: 40;"></circle>
+                            </svg>
+                            <div class="val">NET</div>
+                        </div>
+                    </div>
+                    <div class="data-stream" id="data-stream">
+                        <!-- Dynamic data lines inserted via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Profile Update View -->
+        <main id="view-profile" class="view">
+            <header class="hud-header">
+                <button class="back-btn" onclick="switchView('view-dashboard')"><i class="fas fa-chevron-left"></i> BACK
+                    TO CORE</button>
+                <div class="sys-info">USER PARAMETERS</div>
+            </header>
+
+            <div class="glass-panel profile-panel">
+                <div class="panel-header">
+                    <i class="fas fa-user-shield"></i> UPDATE ENTITY METADATA
+                </div>
+                <div class="profile-avatar-large">
+                    <i class="fas fa-user-astronaut"></i>
+                    <button class="edit-avatar-btn"><i class="fas fa-camera"></i></button>
+                </div>
+                <form id="profile-form" onsubmit="handleProfileUpdate(event)">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>DESIGNATION (USERNAME)</label>
+                            <input type="text" value="System Admin" required>
+                        </div>
+                        <div class="input-group">
+                            <label>COMMS CHANNEL (EMAIL)</label>
+                            <input type="email" value="admin@stark.idx" required>
+                        </div>
+                        <div class="input-group">
+                            <label>BIOMETRIC CLEARANCE LEVEL</label>
+                            <select>
+                                <option value="alpha">Alpha (Full Access)</option>
+                                <option value="beta">Beta (Standard)</option>
+                                <option value="omega">Omega (Restricted)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>INTERFACE PREFERENCE</label>
+                            <select>
+                                <option value="cyan">Mark L (Cyan)</option>
+                                <option value="red">Hulkbuster (Red)</option>
+                                <option value="gold">Mark III (Gold)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="cyber-btn">SAVE PARAMETERS</button>
+                </form>
+            </div>
+        </main>
+
+        <div class="developer-credit-global"
+            style="position: absolute; bottom: 15px; left: 0; width: 100%; text-align: center; color: rgba(0, 243, 255, 0.4); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 3px; pointer-events: none; z-index: 100; text-shadow: 0 0 10px rgba(0,243,255,0.5);">
+            DEVELOPED BY TARUN KUMAR SONI
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
